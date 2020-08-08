@@ -8,15 +8,20 @@ const casesTypeColors = {
     rgb: "rgb(204,16,52)",
     multiplier: 800,
   },
+  active: {
+    hex: "#0000FF",
+    rgb: "rgb(0,0,255)",
+    multiplier: 1000,
+  },
   recovered: {
-    hex: "#7dd71d",
-    rgb: "rgb(2125,215,29)",
+    hex: "#008000",
+    rgb: "rgb(144,238,144)",
     multiplier: 1200,
   },
   deaths: {
-    hex: "#fb4443",
-    rgb: "rgb(251,68,67)",
-    multiplier: 2000,
+    hex: "#808080",
+    rgb: "rgb(128,128,128)",
+    multiplier: 1400,
   },
 };
 
@@ -34,15 +39,16 @@ export const sortData = (data) => {
 };
 
 export const prettyPrintStat = (stat) =>
-  stat ? `+${numeral(stat).format("0.0a")}` : "+0";
+  stat ? `${numeral(stat).format("0,0")}` : "0";
 
 export const showDataOnMap = (data, casesType = "cases") =>
   data.map((country) => (
     <Circle
+      key={country.country}
       center={[country.countryInfo.lat, country.countryInfo.long]}
       fillOpacity={0.4}
       color={casesTypeColors[casesType].hex}
-      fillColor={casesTypeColors[casesType].hex}
+      fillColor={casesTypeColors[casesType].rgb}
       radius={
         Math.sqrt(country[casesType]) * casesTypeColors[casesType].multiplier
       }
@@ -58,6 +64,9 @@ export const showDataOnMap = (data, casesType = "cases") =>
           <div className="info-name">{country.country}</div>
           <div className="info-confirmed">
             Cases: {numeral(country.cases).format("0,0")}
+          </div>
+          <div className="info-active">
+            Active: {numeral(country.active).format("0,0")}
           </div>
           <div className="info-recovered">
             Recovered: {numeral(country.recovered).format("0,0")}

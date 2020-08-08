@@ -4,13 +4,14 @@
 body {
   background-color: #f5f6fa;
 }
-.App {
+.app {
   display: flex;
   justify-content: space-evenly;
   padding: 20px;
 }
 .app__dropdown {
   background-color: white;
+  width: 220px;
 }
 .app__header {
   display: flex;
@@ -47,14 +48,15 @@ body {
   margin-top: 20px;
 }
 .app__footer {
+  flex-direction: column;
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
-  color: rgb(100, 98, 98);
+  color: rgb(99, 98, 100);
 }
 @media (max-width: 990px) {
-  .App {
+  .app {
     flex-direction: column;
   }
 }

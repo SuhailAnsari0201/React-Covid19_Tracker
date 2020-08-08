@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import {
   MenuItem,
   FormControl,
   Select,
   Card,
   CardContent,
+  Box,
+  Typography,
 } from "@material-ui/core";
 import InfoBox from "./InfoBox";
 import Table from "./Table";
@@ -30,7 +32,6 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         setCountryInfo(data);
-        console.log("effect", data);
       });
   }, []);
 
@@ -55,92 +56,114 @@ function App() {
   }, []);
 
   const onCountryChange = async (event) => {
-    const countryCode = event.target.value;
+    const countryName = event.target.value;
     const url =
-      countryCode === "worldwide"
+      countryName === "worldwide"
         ? "https://disease.sh/v3/covid-19/all"
-        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
-    console.log("country selectd", countryCode);
+        : `https://disease.sh/v3/covid-19/countries/${countryName}`;
 
     await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        setCountry(countryCode);
+        setCountry(countryName);
         setCountryInfo(data);
-        console.log(data);
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
-        setMapZoom(4);
+        countryName === "worldwide"
+          ? setMapCenter([34.80746, -40.4796])
+          : setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        setMapZoom(5);
       });
   };
 
   return (
-    <div className="App">
-      <div className="app__left">
-        <div className="app__header">
-          <h1>COVID-19 TRACKER</h1>
-          <FormControl className="app__dropdown">
-            <Select
-              variant="outlined"
-              onChange={onCountryChange}
-              value={country}
-            >
-              <MenuItem value="worldwide">Worldwide</MenuItem>
-              {countries.map((country) => (
-                <MenuItem value={country.value}>{country.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+    <Fragment>
+      <div className="app-container">
+        <div className="app">
+          <div className="app__left">
+            <div className="app__header">
+              <h1>COVID-19 TRACKER</h1>
+              <FormControl className="app__dropdown">
+                <Select
+                  variant="outlined"
+                  onChange={onCountryChange}
+                  value={country}
+                >
+                  <MenuItem value="worldwide">Worldwide</MenuItem>
+                  {countries.map((country) => (
+                    <MenuItem key={country.name} value={country.name}>
+                      {country.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+
+            <div className="app__stats">
+              <InfoBox
+                isRed
+                active={casesType === "cases"}
+                onClick={(e) => setCasesType("cases")}
+                title="Confirmed"
+                cases={prettyPrintStat(countryInfo.todayCases)}
+                total={prettyPrintStat(countryInfo.cases)}
+              />
+              <InfoBox
+                isBlue
+                active={casesType === "active"}
+                onClick={(e) => setCasesType("active")}
+                title="Active"
+                total={prettyPrintStat(countryInfo.active)}
+              />
+
+              <InfoBox
+                isGreen
+                active={casesType === "recovered"}
+                onClick={(e) => setCasesType("recovered")}
+                title="Recovered"
+                cases={prettyPrintStat(countryInfo.todayRecovered)}
+                total={prettyPrintStat(countryInfo.recovered)}
+              />
+              <InfoBox
+                isBlack
+                active={casesType === "deaths"}
+                onClick={(e) => setCasesType("deaths")}
+                title="Deaths"
+                cases={prettyPrintStat(countryInfo.todayDeaths)}
+                total={prettyPrintStat(countryInfo.deaths)}
+              />
+            </div>
+
+            {/* Table */}
+            {/* Graph */}
+
+            <Map
+              casesType={casesType}
+              countries={mapCountries}
+              center={mapCenter}
+              zoom={mapZoom}
+            />
+          </div>
+          <Card className="app__right">
+            <CardContent>
+              <h3>Live cases by Country</h3>
+              <Table countries={tableData} />
+              <h3 className="app__graphTitle">
+                Daily New {casesType} In {country}
+              </h3>
+              <LineGraph
+                className="app__graph"
+                casesType={casesType}
+                country={country}
+              />
+            </CardContent>
+          </Card>
         </div>
-
-        <div className="app__stats">
-          <InfoBox
-            isRed
-            active={casesType === "cases"}
-            onClick={(e) => setCasesType("cases")}
-            title="Coronavirus Cases"
-            cases={prettyPrintStat(countryInfo.todayCases)}
-            total={prettyPrintStat(countryInfo.cases)}
-          />
-
-          <InfoBox
-            active={casesType === "recovered"}
-            onClick={(e) => setCasesType("recovered")}
-            title="Recovered"
-            cases={prettyPrintStat(countryInfo.todayRecovered)}
-            total={prettyPrintStat(countryInfo.recovered)}
-          />
-          <InfoBox
-            isRed
-            active={casesType === "deaths"}
-            onClick={(e) => setCasesType("deaths")}
-            title="Deaths"
-            cases={prettyPrintStat(countryInfo.todayDeaths)}
-            total={prettyPrintStat(countryInfo.deaths)}
-          />
-        </div>
-
-        {/* Table */}
-        {/* Graph */}
-
-        <Map
-          casesType={casesType}
-          countries={mapCountries}
-          center={mapCenter}
-          zoom={mapZoom}
-        />
+        <Box clssName="app__footer" mt={8}>
+          <Typography varient="body2" color="textSecondary">
+            Developed By Suhail and Team From RDEC College
+          </Typography>
+        </Box>
       </div>
-      <Card className="app__right">
-        <CardContent>
-          <h3>Live cases by Country</h3>
-          <Table countries={tableData} />
-          <h3 className="app__graphTitle">Worldwide new {casesType}</h3>
-          <LineGraph className="app__graph" casesType={casesType} />
-        </CardContent>
-      </Card>
-      <div class="app__footer">
-        <p>Developed By Suhail From RDEC College Ghaziabad</p>
-      </div>
-    </div>
+    </Fragment>
   );
 }
 
