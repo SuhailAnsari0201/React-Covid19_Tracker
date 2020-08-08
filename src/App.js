@@ -21,7 +21,7 @@ function App() {
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
+  const [mapCenter, setMapCenter] = useState({ lat: 20.59, lng: 78.96 });
   const [mapZoom, setMapZoom] = useState(3);
   const [mapCountries, setMapCountries] = useState([]);
   const [casesType, setCasesType] = useState("cases");
@@ -68,9 +68,9 @@ function App() {
         setCountry(countryName);
         setCountryInfo(data);
         countryName === "worldwide"
-          ? setMapCenter([34.80746, -40.4796])
+          ? setMapCenter([20.59, 78.96])
           : setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
-        setMapZoom(5);
+        setMapZoom(4);
       });
   };
 
@@ -157,8 +157,8 @@ function App() {
             </CardContent>
           </Card>
         </div>
-        <Box clssName="app__footer" mt={8}>
-          <Typography varient="body2" color="textSecondary">
+        <Box clssName="app__footer" mt={4}>
+          <Typography variant="body2" color="textSecondary">
             Developed By Suhail and Team From RDEC College
           </Typography>
         </Box>

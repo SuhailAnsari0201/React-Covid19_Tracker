@@ -11,12 +11,12 @@ const casesTypeColors = {
   active: {
     hex: "#0000FF",
     rgb: "rgb(0,0,255)",
-    multiplier: 1000,
+    multiplier: 900,
   },
   recovered: {
     hex: "#008000",
     rgb: "rgb(144,238,144)",
-    multiplier: 1200,
+    multiplier: 1000,
   },
   deaths: {
     hex: "#808080",
