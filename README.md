@@ -1,3 +1,6 @@
+## React-Covid19_Tracker
+Run this app using URL : react-covid19-tracker-466a4.web.app
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
